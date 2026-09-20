@@ -1,0 +1,39 @@
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Secrets
+.env
+.env.local
+*.key
+
+# Generated audio files
+audio/
+*.mp3
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Distribution
+build/
+dist/
+*.egg-info/s

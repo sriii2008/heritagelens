@@ -1,0 +1,77 @@
+{
+  "brihadeeswarar_temple": {
+    "id": "brihadeeswarar_temple",
+    "name": "Brihadeeswarar Temple",
+    "location": "Thanjavur, Tamil Nadu",
+    "built_year": "1010 CE",
+    "dynasty": "Chola Dynasty",
+    "architecture": "Dravidian",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "A magnificent Shiva temple built by Raja Raja Chola I, famous for its towering vimana and the fact that its shadow never falls on the ground at noon.",
+    "interesting_facts": [
+      "The Kumbam (apex stone) weighs 80 tonnes and was carved from a single rock",
+      "It is one of the few temples where the shadow of the main tower does not fall on the ground at noon",
+      "Built entirely without the use of any binding material—stones were interlocked"
+    ]
+  },
+  "hampi_virupaksha": {
+    "id": "hampi_virupaksha",
+    "name": "Virupaksha Temple",
+    "location": "Hampi, Karnataka",
+    "built_year": "7th Century CE",
+    "dynasty": "Vijayanagara Empire",
+    "architecture": "Dravidian",
+    "unesco_status": "UNESCO World Heritage Site (Group of Monuments at Hampi)",
+    "short_description": "The oldest functioning temple in India, dedicated to Lord Shiva, located on the banks of the Tungabhadra River.",
+    "interesting_facts": [
+      "It has been continuously worshipped for over 1,300 years",
+      "The temple's main tower is 160 feet tall",
+      "It survived the destruction of Hampi by Mughal forces in 1565 CE"
+    ]
+  },
+  "konark_sun_temple": {
+    "id": "konark_sun_temple",
+    "name": "Konark Sun Temple",
+    "location": "Konark, Odisha",
+    "built_year": "1250 CE",
+    "dynasty": "Eastern Ganga Dynasty",
+    "architecture": "Kalinga Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "A massive temple designed as a giant chariot of the Sun God, with intricately carved stone wheels, horses, and mythological figures.",
+    "interesting_facts": [
+      "The temple is shaped like a chariot with 24 exquisitely carved wheels",
+      "Each wheel is a sundial that can accurately tell time",
+      "The main sanctum was originally 229 feet tall but collapsed"
+    ]
+  },
+  "mahabalipuram_shore_temple": {
+    "id": "mahabalipuram_shore_temple",
+    "name": "Shore Temple",
+    "location": "Mahabalipuram, Tamil Nadu",
+    "built_year": "700-728 CE",
+    "dynasty": "Pallava Dynasty",
+    "architecture": "Dravidian",
+    "unesco_status": "UNESCO World Heritage Site (Group of Monuments at Mahabalipuram)",
+    "short_description": "A structural temple built on the shores of the Bay of Bengal, made of granite blocks, symbolizing the Pallava dynasty's architectural brilliance.",
+    "interesting_facts": [
+      "It is one of the oldest structural (not rock-cut) temples in South India",
+      "It has survived centuries of sea erosion and cyclones",
+      "It served as a lighthouse for sailors in ancient times"
+    ]
+  },
+  "qutub_minar": {
+    "id": "qutub_minar",
+    "name": "Qutub Minar",
+    "location": "Delhi",
+    "built_year": "1199 CE",
+    "dynasty": "Delhi Sultanate (Qutb-ud-din Aibak)",
+    "architecture": "Indo-Islamic",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "A 73-meter tall victory tower, the tallest brick minaret in the world, marking the beginning of Indo-Islamic architecture in India.",
+    "interesting_facts": [
+      "It has 379 steps and is 72.5 meters tall",
+      "The first three stories are made of red sandstone, the fourth and fifth of marble",
+      "It survived multiple earthquakes and was repaired several times"
+    ]
+  }
+}

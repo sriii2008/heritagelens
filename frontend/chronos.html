@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chronos Lens - AI Heritage Monument Recognition</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary-fixed": "#e5deff",
+          "surface-container-high": "#e9e8e5",
+          "tertiary-fixed": "#ffdad6",
+          "surface-container-lowest": "#ffffff",
+          "secondary-fixed": "#c3e7ff",
+          "background": "#faf9f6",
+          "on-primary": "#ffffff",
+          "surface-variant": "#e3e2e0",
+          "on-surface-variant": "#48454f",
+          "surface-container": "#efeeeb",
+          "tertiary-container": "#a3645e",
+          "surface-container-low": "#f4f3f0",
+          "on-background": "#1a1c1a",
+          "error-container": "#ffdad6",
+          "primary": "#5d5588",
+          "secondary": "#3e6378",
+          "outline-variant": "#c9c5d0",
+          "primary-container": "#766ea3",
+          "primary-fixed-dim": "#c9bffa",
+          "outline": "#797580",
+          "tertiary": "#864c47",
+          "on-surface": "#1a1c1a",
+          "tertiary-fixed-dim": "#ffb3ac",
+          "on-primary-fixed": "#1b1343",
+          "surface": "#faf9f6"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "fontFamily": {
+          "headline-lg": ["Noto Serif"],
+          "body-sm": ["Plus Jakarta Sans"],
+          "headline-md": ["Noto Serif"],
+          "body-lg": ["Plus Jakarta Sans"],
+          "headline-lg-mobile": ["Noto Serif"],
+          "headline-sm": ["Noto Serif"],
+          "label-md": ["Plus Jakarta Sans"],
+          "label-sm": ["Plus Jakarta Sans"],
+          "body-md": ["Plus Jakarta Sans"],
+          "label-lg": ["Plus Jakarta Sans"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @keyframes scanline {
+      0% { transform: translateY(-100%); opacity: 0; }
+      50% { opacity: 0.85; }
+      100% { transform: translateY(280px); opacity: 0; }
+    }
+    .animate-scan {
+      animation: scanline 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    .reticle-pulse {
+      animation: pulse-soft 2.4s ease-in-out infinite;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .narrative-loading {
+      background: linear-gradient(90deg, #f0eef8 25%, #e5deff 50%, #f0eef8 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+      min-height: 80px;
+      display: block;
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #5d5588;
+      animation: pulse-soft 1.2s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+</style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen relative overflow-x-hidden">
+<div class="fixed inset-0 pointer-events-none -z-10 bg-gradient-to-b from-[#faf9f6] via-[#f3f0f7] to-[#eef2ff]"></div>
+
+<header class="bg-white/80 backdrop-blur-md border-b border-outline-variant/30 shadow-xs fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-2 w-full">
+<button class="flex items-center justify-center w-10 h-10 rounded-full text-primary" type="button">
+<span class="material-symbols-outlined">token</span>
+</button>
+<div class="flex items-center gap-1">
+<span class="text-xl font-semibold tracking-wider text-[#1e1b4b]">CHRONOS LENS</span>
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary-fixed/60 border border-primary/20 text-xs text-[#1b1343]">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+        Live Vision 4K
+      </span>
+</div>
+<div class="flex items-center gap-1">
+<button class="flex items-center justify-center w-9 h-9 rounded-full text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[20px]">flash_on</span>
+</button>
+<button class="flex items-center justify-center w-9 h-9 rounded-full text-on-surface-variant" type="button">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+</header>
+
+<main class="pt-20 pb-28 px-4 max-w-md mx-auto flex flex-col gap-4 w-full">
+
+<section class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-lg border border-white/80 bg-white flex flex-col justify-between p-4">
+<video id="cameraVideo" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none" style="display:none;"></video>
+<img id="cameraImage" class="absolute inset-0 w-full h-full object-cover object-center pointer-events-none" src="" alt="Monument"/>
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+<div class="absolute inset-x-4 h-1 bg-gradient-to-r from-transparent via-[#c9bffa] to-transparent opacity-90 blur-[1px] animate-scan pointer-events-none"></div>
+
+<div class="relative z-10 flex items-center justify-between">
+<div class="flex items-center gap-1 bg-white/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/70 shadow-sm text-xs text-[#1e1b4b]">
+<span class="material-symbols-outlined text-secondary text-[14px]">center_focus_weak</span>
+<span id="gpsText">Detecting location...</span>
+</div>
+<div class="flex items-center gap-1.5 bg-white/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/70 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-semibold text-[#1b1343]">NIGHT AI ON</span>
+</div>
+</div>
+
+<div class="relative z-10 self-center w-64 h-64 flex flex-col items-center justify-center">
+<div class="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none opacity-30">
+<div class="border-r border-b border-primary-fixed-dim"></div>
+<div class="border-r border-b border-primary-fixed-dim"></div>
+<div class="border-b border-primary-fixed-dim"></div>
+<div class="border-r border-b border-primary-fixed-dim"></div>
+<div class="border-r border-b border-primary-fixed-dim"></div>
+<div class="border-b border-primary-fixed-dim"></div>
+<div class="border-r border-primary-fixed-dim"></div>
+<div class="border-r border-primary-fixed-dim"></div>
+<div></div>
+</div>
+<div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-primary-fixed-dim rounded-tl reticle-pulse"></div>
+<div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-primary-fixed-dim rounded-tr reticle-pulse"></div>
+<div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-primary-fixed-dim rounded-bl reticle-pulse"></div>
+<div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-primary-fixed-dim rounded-br reticle-pulse"></div>
+
+<div id="recognizingBadge" class="z-20 bg-white/90 backdrop-blur-md border border-primary/40 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-lg">
+<span class="material-symbols-outlined text-primary text-[18px] animate-spin">cyclone</span>
+<span id="recognizingText" class="text-xs font-bold text-[#1b1343] tracking-wide">RECOGNIZING STRUCTURE • 99.1%</span>
+</div>
+<div id="lockBadge" class="mt-2 text-xs font-semibold text-[#1e1b4b] bg-white/85 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/80 shadow-xs">
+  PARTHENON • DORIC ORDER LOCK
+</div>
+</div>
+
+<div class="relative z-10 flex items-center justify-between">
+<div class="flex items-center p-0.5 bg-white/85 backdrop-blur-md rounded-full border border-white/70 shadow-sm">
+<button class="px-3 py-1 rounded-full text-xs bg-primary-fixed text-[#1b1343] font-bold" type="button">1x</button>
+<button class="px-3 py-1 rounded-full text-xs text-on-surface-variant font-semibold" type="button">2x</button>
+<button class="px-3 py-1 rounded-full text-xs text-on-surface-variant font-semibold" type="button">5x</button>
+</div>
+<button class="w-10 h-10 rounded-full bg-white/85 backdrop-blur-md border border-white/70 shadow-sm flex items-center justify-center text-[#1e1b4b]" type="button">
+<span class="material-symbols-outlined text-[20px]">flip_camera_android</span>
+</button>
+</div>
+</section>
+
+<section class="flex flex-col items-center justify-center -mt-2">
+<div class="relative flex items-center justify-center">
+<div class="absolute -inset-2 rounded-full bg-gradient-to-r from-primary-fixed via-secondary-fixed to-tertiary-fixed opacity-70 blur-xl"></div>
+<button id="captureBtn" class="relative z-10 flex items-center gap-2 bg-gradient-to-r from-[#c9bffa] via-[#e5deff] to-[#c3e7ff] text-[#1b1343] px-8 py-3.5 rounded-full shadow-lg border border-white/80 hover:brightness-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[24px] text-primary">photo_camera</span>
+<span class="tracking-wide uppercase font-bold text-sm">Capture &amp; Recognize</span>
+</button>
+</div>
+</section>
+
+<article class="bg-white/90 backdrop-blur-xl border border-white/80 rounded-3xl p-6 shadow-xl flex flex-col gap-4">
+<div class="flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span id="periodBadge" class="text-xs uppercase tracking-wider text-[#864c47] bg-[#ffdad6]/60 border border-[#ffdad6] px-2.5 py-1 rounded-full font-bold">
+            Classical Antiquity
+          </span>
+<div class="flex items-center gap-1 text-on-surface-variant text-xs font-medium">
+<span class="material-symbols-outlined text-primary text-[16px]">location_on</span>
+<span id="monumentLocation">Loading...</span>
+</div>
+</div>
+<h1 id="monumentName" class="text-2xl font-bold text-[#1e1b4b] tracking-tight mt-1">
+          Loading monument...
+        </h1>
+<div id="badgeContainer" class="flex flex-wrap gap-1.5 mt-1">
+<span class="text-xs px-2.5 py-0.5 rounded-full bg-[#c3e7ff]/60 border border-[#a6cce4] text-[#001e2c] font-semibold">Dravidian</span>
+<span class="text-xs px-2.5 py-0.5 rounded-full bg-gray-100 border border-gray-300 text-gray-800 font-semibold">Dynasty</span>
+<span class="text-xs px-2.5 py-0.5 rounded-full bg-[#fff4cc] border border-[#ffe58f] text-[#614700] font-semibold">UNESCO</span>
+</div>
+</div>
+
+<div class="bg-gradient-to-br from-[#f8f7fc] to-[#f2effb] border border-[#e5deff] rounded-2xl p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-primary text-xs font-semibold">
+<span class="material-symbols-outlined text-[18px]">neurology</span>
+<span class="font-bold tracking-wider text-[#1b1343]">AI HISTORIAN INSIGHT</span>
+</div>
+<span id="synthTime" class="text-xs text-on-surface-variant">—</span>
+</div>
+<p id="narrativePara1" class="text-sm text-[#1e1b4b] leading-relaxed">Loading...</p>
+<p id="narrativePara2" class="text-sm text-on-surface-variant leading-relaxed"></p>
+</div>
+
+<div class="bg-gradient-to-r from-[#f4f1fa] via-[#faf8ff] to-[#f2effa] border border-[#e5deff] rounded-2xl p-4 flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full bg-primary-fixed border border-primary/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">record_voice_over</span>
+</div>
+<div>
+<p class="text-xs text-[#1e1b4b] font-bold">HeritageLens Narrator</p>
+<p id="audioTitle" class="text-xs text-on-surface-variant font-medium">The Story</p>
+</div>
+</div>
+<span class="text-xs px-2.5 py-0.5 rounded-full bg-white text-[#1b1343] font-bold border border-outline-variant/40">1.0x</span>
+</div>
+
+<div class="h-8 flex items-center justify-between px-3 gap-1.5 bg-white rounded-xl border border-outline-variant/20">
+<div class="w-1 bg-primary h-4 rounded-full"></div>
+<div class="w-1 bg-primary h-6 rounded-full"></div>
+<div class="w-1 bg-primary h-3 rounded-full"></div>
+<div class="w-1 bg-primary h-5 rounded-full"></div>
+<div class="w-1 bg-primary h-7 rounded-full"></div>
+<div class="w-1 bg-primary h-4 rounded-full"></div>
+<div class="w-1 bg-primary h-6 rounded-full"></div>
+<div class="w-1 bg-primary-fixed-dim h-2 rounded-full"></div>
+<div class="w-1 bg-primary-fixed-dim h-3 rounded-full"></div>
+</div>
+
+<div class="flex items-center justify-center gap-6 pt-1">
+<button class="text-on-surface-variant hover:text-primary" type="button">
+<span class="material-symbols-outlined text-[24px]">replay_10</span>
+</button>
+<button id="playBtn" class="w-12 h-12 rounded-full bg-gradient-to-r from-primary to-primary-container text-white flex items-center justify-center shadow-lg hover:brightness-105 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[28px]">play_arrow</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary" type="button">
+<span class="material-symbols-outlined text-[24px]">forward_10</span>
+</button>
+</div>
+<audio id="heritageAudio" preload="auto" playsinline webkit-playsinline style="display:none;"></audio>
+</div>
+
+<div class="grid grid-cols-3 gap-2 pt-1">
+<button class="flex flex-col items-center justify-center p-2 rounded-xl bg-gray-50 hover:bg-primary-fixed/40 border border-outline-variant/30" type="button">
+<span class="material-symbols-outlined text-secondary text-[22px] mb-1">bookmark_add</span>
+<span class="text-xs text-[#1e1b4b] font-semibold">Passport</span>
+</button>
+<button id="arBtn" class="flex flex-col items-center justify-center p-2 rounded-xl bg-gray-50 hover:bg-primary-fixed/40 border border-outline-variant/30" type="button">
+<span class="material-symbols-outlined text-primary text-[22px] mb-1">view_in_ar</span>
+<span class="text-xs text-[#1e1b4b] font-semibold">3D Model</span>
+</button>
+<button class="flex flex-col items-center justify-center p-2 rounded-xl bg-gray-50 hover:bg-primary-fixed/40 border border-outline-variant/30" type="button">
+<span class="material-symbols-outlined text-tertiary text-[22px] mb-1">share</span>
+<span class="text-xs text-[#1e1b4b] font-semibold">Discovery</span>
+</button>
+</div>
+</article>
+</main>
+
+<nav class="bg-white/85 backdrop-blur-xl border-t border-outline-variant/30 shadow-lg fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-1">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#explore">
+<span class="material-symbols-outlined text-[22px]">explore</span>
+<span class="text-xs font-medium">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-fixed/70 text-[#1b1343] rounded-xl px-4 py-1" href="#scan">
+<span class="material-symbols-outlined text-[22px] text-primary">center_focus_strong</span>
+<span class="text-xs font-bold">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#saved">
+<span class="material-symbols-outlined text-[22px]">bookmarks</span>
+<span class="text-xs font-medium">Saved</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1" href="#map">
+<span class="material-symbols-outlined text-[22px]">map</span>
+<span class="text-xs font-medium">Map</span>
+</a>
+</nav>
+
+<script>
+    // ============================================
+    // SMART API DETECTION
+    // ============================================
+    const API_BASE = window.location.origin;
+
+    let currentMonumentId = "brihadeeswarar_temple";
+    let currentLanguage = "en";
+
+    const MONUMENTS = [
+        "brihadeeswarar_temple",
+        "hampi_virupaksha",
+        "konark_sun_temple",
+        "mahabalipuram_shore_temple",
+        "qutub_minar"
+    ];
+    let monumentIndex = 0;
+
+    // Monument images (emoji fallbacks)
+    const MONUMENT_COLORS = {
+        "brihadeeswarar_temple": { emoji: "🛕", name: "Brihadeeswarar Temple", color1: "#8b4513", color2: "#d2691e" },
+        "hampi_virupaksha": { emoji: "🏛️", name: "Virupaksha Temple", color1: "#6a1b9a", color2: "#ab47bc" },
+        "konark_sun_temple": { emoji: "☀️", name: "Konark Sun Temple", color1: "#e65100", color2: "#ffb300" },
+        "mahabalipuram_shore_temple": { emoji: "🌊", name: "Shore Temple", color1: "#1565c0", color2: "#42a5f5" },
+        "qutub_minar": { emoji: "🗼", name: "Qutub Minar", color1: "#37474f", color2: "#78909c" }
+    };
+
+    // ============================================
+    // MAIN LOADER
+    // ============================================
+    async function loadMonument(monumentId, language = "en") {
+        currentMonumentId = monumentId;
+        currentLanguage = language;
+
+        const p1El = document.getElementById('narrativePara1');
+        const p2El = document.getElementById('narrativePara2');
+        p1El.className = 'narrative-loading';
+        p1El.textContent = '';
+        p2El.className = '';
+        p2El.textContent = '';
+        document.getElementById('synthTime').textContent = "Synthesizing...";
+
+        try {
+            const res = await fetch(`${API_BASE}/experience/${monumentId}?language=${language}`);
+            if (!res.ok) throw new Error("API error");
+            const data = await res.json();
+            const monument = data.monument;
+
+            // Update image
+            const imgInfo = MONUMENT_COLORS[monumentId];
+            if (imgInfo) {
+                const imageEl = document.getElementById('cameraImage');
+                if (imageEl) {
+                    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+                        <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:${imgInfo.color1}" />
+                            <stop offset="100%" style="stop-color:${imgInfo.color2}" />
+                        </linearGradient></defs>
+                        <rect width="800" height="1000" fill="url(#grad)" />
+                        <text x="400" y="450" font-size="200" text-anchor="middle">${imgInfo.emoji}</text>
+                        <text x="400" y="620" font-size="44" fill="white" text-anchor="middle" font-family="serif" font-weight="bold">${imgInfo.name}</text>
+                        <text x="400" y="680" font-size="26" fill="rgba(255,255,255,0.85)" text-anchor="middle" font-family="sans-serif">${monument.location}</text>
+                    </svg>`;
+                    imageEl.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+                }
+            }
+
+            document.getElementById('monumentLocation').textContent = monument.location;
+            document.getElementById('monumentName').textContent = monument.name;
+            document.getElementById('periodBadge').textContent = `${monument.dynasty} • ${monument.built_year}`;
+
+            const badgeContainer = document.getElementById('badgeContainer');
+            const badges = badgeContainer.querySelectorAll('span');
+            if (badges.length >= 3) {
+                badges[0].textContent = monument.architecture;
+                badges[1].textContent = monument.dynasty;
+                badges[2].textContent = monument.unesco_status || "Heritage Site";
+            }
+
+            if (data.narrative) {
+                const words = data.narrative.split(' ');
+                const mid = Math.floor(words.length * 0.55);
+                p1El.className = 'text-sm text-[#1e1b4b] leading-relaxed';
+                p2El.className = 'text-sm text-on-surface-variant leading-relaxed';
+                p1El.textContent = words.slice(0, mid).join(' ');
+                p2El.textContent = words.slice(mid).join(' ');
+            }
+
+            document.getElementById('synthTime').textContent = "Synthesized in 0.5s";
+            document.getElementById('lockBadge').textContent = `${monument.name.toUpperCase()} • RECOGNIZED`;
+            document.getElementById('audioTitle').textContent = `The Story of ${monument.name}`;
+            document.getElementById('gpsText').textContent = monument.location;
+
+            // FIX: Audio URL for mobile
+            if (data.audio_url) {
+                const audioEl = document.getElementById('heritageAudio');
+                const fullAudioUrl = data.audio_url.startsWith('http')
+                    ? data.audio_url
+                    : `${API_BASE}${data.audio_url}`;
+                audioEl.src = fullAudioUrl;
+                audioEl.load();
+                console.log("🔊 Audio URL:", fullAudioUrl);
+            }
+
+        } catch (err) {
+            console.error("Error loading monument:", err);
+            p1El.className = 'text-sm text-[#1e1b4b] leading-relaxed';
+            p1El.textContent = "❌ Could not load content. Is the server running?";
+            p2El.textContent = "";
+        }
+    }
+
+    // ============================================
+    // PAGE LOAD
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // CAPTURE BUTTON
+        document.getElementById('captureBtn').addEventListener('click', () => {
+            monumentIndex = (monumentIndex + 1) % MONUMENTS.length;
+            const nextMonument = MONUMENTS[monumentIndex];
+
+            document.getElementById('recognizingText').textContent = "RECOGNIZING STRUCTURE...";
+            document.getElementById('lockBadge').textContent = "ANALYZING...";
+
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+            } catch (e) {}
+
+            if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+
+            setTimeout(() => loadMonument(nextMonument, currentLanguage), 800);
+        });
+
+        // PLAY BUTTON
+        const playBtn = document.getElementById('playBtn');
+        const audioEl = document.getElementById('heritageAudio');
+
+        playBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!audioEl.src) {
+                alert("No audio available yet. Click CAPTURE & RECOGNIZE first.");
+                return;
+            }
+            try {
+                if (audioEl.paused) {
+                    audioEl.load();
+                    await audioEl.play();
+                    playBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+                } else {
+                    audioEl.pause();
+                    playBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+                }
+            } catch (err) {
+                console.error("Audio error:", err);
+                alert("Audio failed: " + err.message);
+            }
+        });
+
+        audioEl.addEventListener('ended', () => {
+            playBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+        });
+
+        // AR BUTTON
+        document.getElementById('arBtn').addEventListener('click', () => {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;inset:0;background:rgba(30,27,75,0.85);backdrop-filter:blur(12px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+            modal.innerHTML = `
+                <div style="background:white;border-radius:24px;padding:32px;max-width:500px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.3);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h2 style="font-family:'Noto Serif',serif;font-size:24px;color:#1e1b4b;margin:0;">🥽 AR Experience</h2>
+                        <button id="closeArModal" style="background:#e5deff;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;color:#5d5588;">×</button>
+                    </div>
+                    <div style="background:linear-gradient(135deg,#c9bffa,#e5deff,#c3e7ff);border-radius:16px;height:240px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+                        <div style="font-size:80px;">🏛️</div>
+                    </div>
+                    <p style="color:#48454f;font-size:15px;line-height:1.6;margin-bottom:20px;">
+                        <strong style="color:#1e1b4b;">Coming soon:</strong> Point your camera at the monument and see historical reconstructions and 3D architectural models in AR — powered by ARCore.
+                    </p>
+                    <div style="display:flex;gap:12px;justify-content:flex-end;">
+                        <button id="closeArBtn2" style="padding:10px 20px;border-radius:10px;border:1px solid #e5deff;background:white;color:#5d5588;font-weight:600;cursor:pointer;">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            const closeModal = () => modal.remove();
+            document.getElementById('closeArModal').onclick = closeModal;
+            document.getElementById('closeArBtn2').onclick = closeModal;
+        });
+
+        // LANGUAGE TOGGLE
+        const langToggle = document.createElement('div');
+        langToggle.style.cssText = 'position:fixed;top:70px;right:16px;z-index:60;display:flex;gap:4px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid #e5deff;border-radius:999px;padding:4px;box-shadow:0 4px 16px rgba(93,85,136,0.15);';
+        langToggle.innerHTML = `
+            <button id="langEN" style="padding:6px 12px;border-radius:999px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:#e5deff;color:#1b1343;">EN</button>
+            <button id="langTA" style="padding:6px 12px;border-radius:999px;border:none;font-weight:700;font-size:12px;cursor:pointer;background:transparent;color:#48454f;">தமிழ்</button>
+        `;
+        document.body.appendChild(langToggle);
+
+        document.getElementById('langEN').addEventListener('click', () => {
+            if (currentLanguage === 'en') return;
+            currentLanguage = 'en';
+            document.getElementById('langEN').style.background = '#e5deff';
+            document.getElementById('langEN').style.color = '#1b1343';
+            document.getElementById('langTA').style.background = 'transparent';
+            document.getElementById('langTA').style.color = '#48454f';
+            loadMonument(currentMonumentId, 'en');
+        });
+
+        document.getElementById('langTA').addEventListener('click', () => {
+            if (currentLanguage === 'ta') return;
+            currentLanguage = 'ta';
+            document.getElementById('langTA').style.background = '#e5deff';
+            document.getElementById('langTA').style.color = '#1b1343';
+            document.getElementById('langEN').style.background = 'transparent';
+            document.getElementById('langEN').style.color = '#48454f';
+            loadMonument(currentMonumentId, 'ta');
+        });
+
+        // MONUMENT PICKER
+        const picker = document.createElement('div');
+        picker.style.cssText = 'position:fixed;top:70px;left:16px;z-index:60;display:flex;flex-direction:column;gap:6px;background:rgba(255,255,255,0.95);backdrop-filter:blur(12px);border:1px solid #e5deff;border-radius:16px;padding:8px;box-shadow:0 8px 24px rgba(93,85,136,0.18);max-height:60vh;overflow-y:auto;';
+        const monumentList = [
+            { id: "brihadeeswarar_temple", emoji: "🛕", label: "Brihadeeswarar" },
+            { id: "hampi_virupaksha", emoji: "🏛️", label: "Virupaksha" },
+            { id: "konark_sun_temple", emoji: "☀️", label: "Konark" },
+            { id: "mahabalipuram_shore_temple", emoji: "🌊", label: "Shore Temple" },
+            { id: "qutub_minar", emoji: "🗼", label: "Qutub Minar" }
+        ];
+        monumentList.forEach(m => {
+            const btn = document.createElement('button');
+            btn.textContent = `${m.emoji} ${m.label}`;
+            btn.style.cssText = 'padding:8px 12px;border-radius:10px;border:1px solid #e5deff;background:white;color:#1e1b4b;font-size:12px;font-weight:600;cursor:pointer;text-align:left;white-space:nowrap;';
+            btn.onclick = () => {
+                loadMonument(m.id, currentLanguage);
+                window.scrollTo({ top: 400, behavior: 'smooth' });
+            };
+            picker.appendChild(btn);
+        });
+        document.body.appendChild(picker);
+
+        // ACCESSIBILITY BUTTON
+        const a11yBtn = document.createElement('button');
+        a11yBtn.innerHTML = '♿';
+        a11yBtn.style.cssText = 'position:fixed;bottom:100px;right:16px;z-index:60;width:48px;height:48px;border-radius:50%;border:2px solid #e5deff;background:white;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(93,85,136,0.25);';
+        document.body.appendChild(a11yBtn);
+
+        let a11yOn = false;
+        a11yBtn.onclick = () => {
+            a11yOn = !a11yOn;
+            document.body.style.fontSize = a11yOn ? '18px' : '';
+            document.body.style.filter = a11yOn ? 'contrast(1.15) saturate(1.1)' : '';
+            a11yBtn.style.background = a11yOn ? '#5d5588' : 'white';
+            a11yBtn.style.color = a11yOn ? 'white' : '';
+        };
+
+        // INITIAL LOAD
+        loadMonument('brihadeeswarar_temple', 'en');
+    });
+</script>
+
+</body>
+</html>
