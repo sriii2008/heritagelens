@@ -21,7 +21,7 @@
     "built_year": "7th Century CE",
     "dynasty": "Vijayanagara Empire",
     "architecture": "Dravidian",
-    "unesco_status": "UNESCO World Heritage Site (Group of Monuments at Hampi)",
+    "unesco_status": "UNESCO World Heritage Site",
     "short_description": "The oldest functioning temple in India, dedicated to Lord Shiva, located on the banks of the Tungabhadra River.",
     "interesting_facts": [
       "It has been continuously worshipped for over 1,300 years",
@@ -51,7 +51,7 @@
     "built_year": "700-728 CE",
     "dynasty": "Pallava Dynasty",
     "architecture": "Dravidian",
-    "unesco_status": "UNESCO World Heritage Site (Group of Monuments at Mahabalipuram)",
+    "unesco_status": "UNESCO World Heritage Site",
     "short_description": "A structural temple built on the shores of the Bay of Bengal, made of granite blocks, symbolizing the Pallava dynasty's architectural brilliance.",
     "interesting_facts": [
       "It is one of the oldest structural (not rock-cut) temples in South India",
@@ -64,7 +64,7 @@
     "name": "Qutub Minar",
     "location": "Delhi",
     "built_year": "1199 CE",
-    "dynasty": "Delhi Sultanate (Qutb-ud-din Aibak)",
+    "dynasty": "Delhi Sultanate",
     "architecture": "Indo-Islamic",
     "unesco_status": "UNESCO World Heritage Site",
     "short_description": "A 73-meter tall victory tower, the tallest brick minaret in the world, marking the beginning of Indo-Islamic architecture in India.",
@@ -72,6 +72,156 @@
       "It has 379 steps and is 72.5 meters tall",
       "The first three stories are made of red sandstone, the fourth and fifth of marble",
       "It survived multiple earthquakes and was repaired several times"
+    ]
+  },
+  "taj_mahal": {
+    "id": "taj_mahal",
+    "name": "Taj Mahal",
+    "location": "Agra, Uttar Pradesh",
+    "built_year": "1632-1653 CE",
+    "dynasty": "Mughal Empire",
+    "architecture": "Mughal Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "An ivory-white marble mausoleum built by Emperor Shah Jahan in memory of his beloved wife Mumtaz Mahal, considered the finest example of Mughal architecture.",
+    "interesting_facts": [
+      "It took 22 years and 20,000 workers to complete",
+      "The four minarets are tilted slightly outward to protect the main tomb in case of collapse",
+      "The marble changes color throughout the day — pink at dawn, white at noon, golden at sunset"
+    ]
+  },
+  "red_fort": {
+    "id": "red_fort",
+    "name": "Red Fort",
+    "location": "Delhi",
+    "built_year": "1648 CE",
+    "dynasty": "Mughal Empire",
+    "architecture": "Mughal Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "The main residence of Mughal emperors for nearly 200 years, built by Shah Jahan, and the site where India's Independence Day speech is delivered every year.",
+    "interesting_facts": [
+      "Its walls are 2.5 km long and range from 16 to 33 meters high",
+      "The Prime Minister of India hoists the national flag here every Independence Day",
+      "It originally had a water channel called 'Nahr-i-Bihisht' (Stream of Paradise)"
+    ]
+  },
+  "ajanta_caves": {
+    "id": "ajanta_caves",
+    "name": "Ajanta Caves",
+    "location": "Aurangabad, Maharashtra",
+    "built_year": "2nd Century BCE - 6th Century CE",
+    "dynasty": "Satavahana and Vakataka",
+    "architecture": "Rock-cut Buddhist Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "30 rock-cut Buddhist cave monuments featuring some of the finest ancient Indian art, including elaborate frescoes and sculptures.",
+    "interesting_facts": [
+      "The caves were accidentally rediscovered in 1819 by a British officer hunting tigers",
+      "The paintings use natural pigments that have survived 2,000 years",
+      "The caves served as monasteries and prayer halls for Buddhist monks"
+    ]
+  },
+  "ellora_caves": {
+    "id": "ellora_caves",
+    "name": "Ellora Caves",
+    "location": "Aurangabad, Maharashtra",
+    "built_year": "600-1000 CE",
+    "dynasty": "Rashtrakuta Dynasty",
+    "architecture": "Rock-cut Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "A complex of 34 monasteries and temples representing Buddhist, Hindu, and Jain faiths, showcasing the spirit of religious tolerance in ancient India.",
+    "interesting_facts": [
+      "The Kailasa Temple was carved top-down from a single rock",
+      "It would have taken 7,000 workers and 150 years to complete",
+      "The caves represent all three major Indian religions side by side"
+    ]
+  },
+  "khajuraho_temples": {
+    "id": "khajuraho_temples",
+    "name": "Khajuraho Temples",
+    "location": "Khajuraho, Madhya Pradesh",
+    "built_year": "950-1050 CE",
+    "dynasty": "Chandela Dynasty",
+    "architecture": "Nagara Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "A group of Hindu and Jain temples famous for their intricate nagara-style architecture and erotic sculptures that depict various aspects of life in medieval India.",
+    "interesting_facts": [
+      "Only 20 of the original 85 temples have survived",
+      "The sculptures depict 4 goals of Hindu life: Dharma, Artha, Kama, Moksha",
+      "The temples were forgotten for centuries until rediscovered in 1838"
+    ]
+  },
+  "hawa_mahal": {
+    "id": "hawa_mahal",
+    "name": "Hawa Mahal",
+    "location": "Jaipur, Rajasthan",
+    "built_year": "1799 CE",
+    "dynasty": "Rajput (Kachhwaha)",
+    "architecture": "Rajput Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "The 'Palace of Winds', a stunning pink sandstone structure with 953 small windows designed to allow royal women to observe street festivals unseen.",
+    "interesting_facts": [
+      "It has 953 jharokhas (small windows) arranged in a honeycomb pattern",
+      "The windows create a natural air-conditioning effect",
+      "It was designed to look like the crown of Lord Krishna"
+    ]
+  },
+  "sun_temple_modhera": {
+    "id": "sun_temple_modhera",
+    "name": "Sun Temple, Modhera",
+    "location": "Modhera, Gujarat",
+    "built_year": "1026 CE",
+    "dynasty": "Solanki Dynasty",
+    "architecture": "Solanki Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "A stunning temple dedicated to the Sun God, known for its intricate carvings and the fact that the sun's rays illuminate the deity on specific days.",
+    "interesting_facts": [
+      "It is designed so that the first rays of the sun fall on the deity during equinoxes",
+      "The stepwell (Surya Kund) in front has 108 shrines",
+      "It was built before the more famous Konark Sun Temple"
+    ]
+  },
+  "mahabodhi_temple": {
+    "id": "mahabodhi_temple",
+    "name": "Mahabodhi Temple",
+    "location": "Bodh Gaya, Bihar",
+    "built_year": "3rd Century BCE",
+    "dynasty": "Mauryan Empire",
+    "architecture": "Buddhist Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "The holiest site in Buddhism, marking the location where Siddhartha Gautama attained enlightenment and became the Buddha.",
+    "interesting_facts": [
+      "The Bodhi tree here is a direct descendant of the original tree under which Buddha attained enlightenment",
+      "Emperor Ashoka built the first temple here in the 3rd century BCE",
+      "The current temple structure dates from the 5th-6th century CE"
+    ]
+  },
+  "golden_temple": {
+    "id": "golden_temple",
+    "name": "Golden Temple (Harmandir Sahib)",
+    "location": "Amritsar, Punjab",
+    "built_year": "1589 CE",
+    "dynasty": "Sikh Empire",
+    "architecture": "Sikh Architecture",
+    "unesco_status": "UNESCO World Heritage Site",
+    "short_description": "The holiest Sikh gurdwara, known for its stunning gold-covered dome, serving free meals to over 100,000 visitors daily regardless of religion.",
+    "interesting_facts": [
+      "The temple serves free meals (langar) to over 100,000 people every day",
+      "The upper floors are covered with 750 kg of pure gold",
+      "It has four entrances, symbolizing openness to people from all four directions"
+    ]
+  },
+  "victoria_memorial": {
+    "id": "victoria_memorial",
+    "name": "Victoria Memorial",
+    "location": "Kolkata, West Bengal",
+    "built_year": "1921 CE",
+    "dynasty": "British Raj",
+    "architecture": "Indo-Saracenic",
+    "unesco_status": "Heritage Site",
+    "short_description": "A grand white marble building dedicated to Queen Victoria, now a museum with a vast collection of British-era artifacts and paintings.",
+    "interesting_facts": [
+      "Made of the same marble used in the Taj Mahal (Makrana marble)",
+      "It houses the largest collection of British-era paintings in India",
+      "The Angel of Victory on top rotates with the wind"
     ]
   }
 }

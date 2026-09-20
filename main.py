@@ -183,6 +183,38 @@ def full_experience(request: Request, monument_id: str, language: str = "en"):
     }
 
 
+# ============================================
+# RECOGNITION ENDPOINT (Mock for now, Tarun's ML later)
+# ============================================
+from fastapi import UploadFile, File
+import random
+
+@app.post("/recognize")
+@limiter.limit("20/minute")
+async def recognize_monument(request: Request, image: UploadFile = File(...)):
+    """
+    Accepts an uploaded image and returns a monument ID.
+    Currently MOCK — will be replaced with Tarun's ML model.
+    """
+    # Validate
+    if not image.content_type or not image.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Only image files allowed")
+
+    contents = await image.read()
+    if len(contents) > 5 * 1024 * 1024:  # 5 MB limit
+        raise HTTPException(status_code=400, detail="Image too large (max 5 MB)")
+
+    # MOCK: Pick a random monument
+    # TODO: Replace with real ML model from Tarun
+    monument_id = random.choice(list(MONUMENTS.keys()))
+
+    return {
+        "monument_id": monument_id,
+        "monument_name": MONUMENTS[monument_id]["name"],
+        "confidence": round(random.uniform(0.85, 0.99), 2),
+        "status": "mock",
+        "note": "Real ML model will be integrated here"
+    }
 @app.get("/app")
 def serve_frontend():
     return FileResponse("frontend/chronos.html")

@@ -36,4 +36,7 @@ Thumbs.db
 # Distribution
 build/
 dist/
-*.egg-info/s
+*.egg-info/
+
+# Uploads (temporary)
+uploads/
