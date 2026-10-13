@@ -1,0 +1,2 @@
+"id,name,location,state,district,latitude,longitude,built_year_start,built_year_end,year_display,dynasty,architecture,monument_type,unesco_status,short_description,interesting_facts,tags,data_source
+example_monument,Example Monument,Example City,Example State,Example District,20.0,78.0,1000,1050,1000-1050 CE,Example Dynasty,Example Architecture,Temple,UNESCO World Heritage Site,Short description here,""Fact 1|Fact 2|Fact 3"",tag1|tag2|tag3,Wikipedia"

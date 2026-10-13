@@ -9,3 +9,5 @@ requests
 slowapi
 pydantic
 python-multipart
+sqlalchemy
+pillow

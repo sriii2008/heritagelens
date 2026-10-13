@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chronos Lens - AI Heritage Monument Recognition</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "primary-fixed": "#e5deff",
+          "surface-container-high": "#e9e8e5",
+          "tertiary-fixed": "#ffdad6",
+          "surface-container-lowest": "#ffffff",
+          "secondary-fixed": "#c3e7ff",
+          "background": "#faf9f6",
+          "surface-variant": "#e3e2e0",
+          "on-surface-variant": "#48454f",
+          "surface-container": "#efeeeb",
+          "surface-container-low": "#f4f3f0",
+          "primary": "#5d5588",
+          "secondary": "#3e6378",
+          "primary-container": "#766ea3",
+          "primary-fixed-dim": "#c9bffa",
+          "tertiary": "#864c47",
+          "on-surface": "#1a1c1a",
+          "surface": "#faf9f6"
+        },
+        "fontFamily": {
+          "headline-lg": ["Noto Serif"],
+          "body-sm": ["Plus Jakarta Sans"],
+          "headline-sm": ["Noto Serif"],
+          "label-md": ["Plus Jakarta Sans"],
+          "label-sm": ["Plus Jakarta Sans"],
+          "body-md": ["Plus Jakarta Sans"],
+          "label-lg": ["Plus Jakarta Sans"]
+        }
+      },
+    },
+  }
+</script>
+<style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-serif { font-family: 'Noto Serif', serif; }
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @keyframes scanline {
+      0% { transform: translateY(-100%); opacity: 0; }
+      50% { opacity: 0.85; }
+      100% { transform: translateY(280px); opacity: 0; }
+    }
+    .animate-scan {
+      animation: scanline 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      box-shadow: 0 0 20px rgba(201, 191, 250, 0.8);
+    }
+
+    @keyframes pulse-soft {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .reticle-pulse {
+      animation: pulse-soft 2s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .narrative-loading {
+      background: linear-gradient(90deg, #f0eef8 25%, #e5deff 50%, #f0eef8 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+      min-height: 60px;
+      display: block;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeInUp 0.5s ease; }
+
+    button { transition: all 0.2s ease; cursor: pointer; }
+    button:active { transform: scale(0.96); }
+
+    .monument-btn:hover {
+      background: #e5deff !important;
+      transform: translateX(4px);
+    }
+
+    article { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    article:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(93, 85, 136, 0.15);
+    }
+
+    .pulse-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #5d5588;
+      animation: pulse-soft 1.2s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    #monumentPicker::-webkit-scrollbar { width: 4px; }
+    #monumentPicker::-webkit-scrollbar-thumb { background: #c9bffa; border-radius: 2px; }
+     #searchInput::placeholder { color: #a0a0b0; }
+</style>
+</head>
+<body class="antialiased min-h-screen relative overflow-x-hidden" style="background: #faf9f6; color: #1a1c1a;">
+
+<div style="position: fixed; inset: 0; pointer-events: none; z-index: -10; background: linear-gradient(180deg, #faf9f6 0%, #f3f0f7 50%, #eef2ff 100%);"></div>
+
+<!-- HEADER -->
+<header style="position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid #e5e5e5;">
+<button style="width: 40px; height: 40px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; color: #5d5588;">
+<span class="material-symbols-outlined">token</span>
+</button>
+<div style="display: flex; align-items: center; gap: 8px;">
+<span class="font-serif" style="font-size: 20px; font-weight: 600; color: #1e1b4b; letter-spacing: 0.05em;">CHRONOS LENS</span>
+<span style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; background: rgba(229,222,255,0.6); border: 1px solid rgba(93,85,136,0.2); font-size: 11px; color: #1b1343;">
+<span style="width: 6px; height: 6px; border-radius: 50%; background: #5d5588; animation: pulse-soft 1.5s infinite;"></span>
+Live Vision 4K
+</span>
+</div>
+<div style="display: flex; align-items: center; gap: 4px;">
+<button style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; color: #48454f;">
+<span class="material-symbols-outlined" style="font-size: 20px;">flash_on</span>
+</button>
+<button style="width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; display: flex; align-items: center; justify-content: center; color: #48454f;">
+<span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+</button>
+</div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main style="padding: 80px 16px 112px; max-width: 440px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px;">
+
+<!-- CAMERA VIEWPORT -->
+<section style="position: relative; width: 100%; aspect-ratio: 4/5; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.12); border: 1px solid rgba(255,255,255,0.8); background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; padding: 16px;">
+<video id="cameraVideo" autoplay playsinline muted style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none;"></video>
+<img id="cameraImage" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;" src="" alt="Monument"/>
+<div style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.4) 100%);"></div>
+<div class="animate-scan" style="position: absolute; left: 16px; right: 16px; height: 3px; background: linear-gradient(90deg, transparent, #c9bffa, transparent); opacity: 0.9; filter: blur(1px); pointer-events: none;"></div>
+
+<!-- TOP HUD -->
+<div style="position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;">
+<div style="display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.7); font-size: 11px; color: #1e1b4b; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+<span class="material-symbols-outlined" style="font-size: 14px; color: #3e6378;">center_focus_weak</span>
+<span id="gpsText">Detecting...</span>
+</div>
+<div style="display: flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: #5d5588; animation: pulse-soft 1.5s infinite;"></span>
+<span style="font-size: 11px; font-weight: 600; color: #1b1343;">NIGHT AI ON</span>
+</div>
+</div>
+
+<!-- CENTER RETICLE -->
+<div style="position: relative; z-index: 10; align-self: center; width: 240px; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+<div style="position: absolute; top: 0; left: 0; width: 32px; height: 32px; border-top: 2px solid #c9bffa; border-left: 2px solid #c9bffa; border-top-left-radius: 4px;" class="reticle-pulse"></div>
+<div style="position: absolute; top: 0; right: 0; width: 32px; height: 32px; border-top: 2px solid #c9bffa; border-right: 2px solid #c9bffa; border-top-right-radius: 4px;" class="reticle-pulse"></div>
+<div style="position: absolute; bottom: 0; left: 0; width: 32px; height: 32px; border-bottom: 2px solid #c9bffa; border-left: 2px solid #c9bffa; border-bottom-left-radius: 4px;" class="reticle-pulse"></div>
+<div style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-bottom: 2px solid #c9bffa; border-right: 2px solid #c9bffa; border-bottom-right-radius: 4px;" class="reticle-pulse"></div>
+
+<div style="z-index: 20; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid rgba(93,85,136,0.4); padding: 6px 16px; border-radius: 999px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 16px rgba(93,85,136,0.25);">
+<span class="material-symbols-outlined" style="font-size: 18px; color: #5d5588; animation: pulse-soft 1.5s infinite;">cyclone</span>
+<span id="recognizingText" style="font-size: 12px; font-weight: 700; color: #1b1343; letter-spacing: 0.03em;">RECOGNIZING STRUCTURE</span>
+</div>
+<div id="lockBadge" style="margin-top: 8px; font-size: 11px; font-weight: 600; color: #1e1b4b; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.8);">
+  READY TO SCAN
+</div>
+</div>
+
+<!-- BOTTOM CONTROLS -->
+<div style="position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;">
+<div style="display: flex; align-items: center; padding: 2px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border-radius: 999px; border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+<button style="padding: 4px 12px; border-radius: 999px; border: none; font-size: 11px; background: #e5deff; color: #1b1343; font-weight: 700;">1x</button>
+<button style="padding: 4px 12px; border-radius: 999px; border: none; font-size: 11px; background: transparent; color: #48454f; font-weight: 600;">2x</button>
+<button style="padding: 4px 12px; border-radius: 999px; border: none; font-size: 11px; background: transparent; color: #48454f; font-weight: 600;">5x</button>
+</div>
+<button style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; color: #1e1b4b;">
+<span class="material-symbols-outlined" style="font-size: 20px;">flip_camera_android</span>
+</button>
+</div>
+</section>
+
+<!-- CAPTURE BUTTON -->
+<section style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: -8px;">
+<div style="position: relative; display: flex; align-items: center; justify-content: center;">
+<div style="position: absolute; inset: -8px; border-radius: 999px; background: linear-gradient(90deg, #e5deff, #c3e7ff, #ffdad6); opacity: 0.7; filter: blur(20px);"></div>
+<button id="captureBtn" style="position: relative; z-index: 10; display: flex; align-items: center; gap: 8px; padding: 14px 32px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.8); background: linear-gradient(90deg, #c9bffa, #e5deff, #c3e7ff); color: #1b1343; box-shadow: 0 8px 24px rgba(93,85,136,0.22);">
+<span class="material-symbols-outlined" style="font-size: 24px; color: #5d5588;">photo_camera</span>
+<span style="letter-spacing: 0.05em; text-transform: uppercase; font-weight: 700; font-size: 13px;">Capture & Recognize</span>
+</button>
+</div>
+<p style="font-size: 11px; color: #48454f; margin-top: 8px; display: flex; align-items: center; gap: 6px; font-weight: 500;">
+<span class="material-symbols-outlined" style="font-size: 14px; color: #5d5588;">auto_awesome</span>
+AI Neural Engine analyzing
+</p>
+</section>
+
+<!-- RESULT PANEL -->
+<article style="background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.8); border-radius: 24px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); display: flex; flex-direction: column; gap: 16px;">
+
+<!-- Title -->
+<div style="display: flex; flex-direction: column; gap: 4px;">
+<div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+<span id="periodBadge" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #864c47; background: rgba(255,218,214,0.6); border: 1px solid #ffdad6; padding: 4px 10px; border-radius: 999px; font-weight: 700;">Loading...</span>
+<div style="display: flex; align-items: center; gap: 4px; color: #48454f; font-size: 12px; font-weight: 500;">
+<span class="material-symbols-outlined" style="font-size: 16px; color: #5d5588;">location_on</span>
+<span id="monumentLocation">Loading...</span>
+</div>
+</div>
+<h1 id="monumentName" class="font-serif" style="font-size: 26px; font-weight: 600; color: #1e1b4b; margin-top: 4px; line-height: 1.2;">Loading...</h1>
+<div id="badgeContainer" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;">
+<span style="font-size: 11px; padding: 3px 10px; border-radius: 999px; background: rgba(195,231,255,0.6); border: 1px solid #a6cce4; color: #001e2c; font-weight: 600;">Dravidian</span>
+<span style="font-size: 11px; padding: 3px 10px; border-radius: 999px; background: #efeeeb; border: 1px solid #c9c5d0; color: #1a1c1a; font-weight: 600;">Dynasty</span>
+<span style="font-size: 11px; padding: 3px 10px; border-radius: 999px; background: #fff4cc; border: 1px solid #ffe58f; color: #614700; font-weight: 600;">UNESCO</span>
+</div>
+</div>
+
+<!-- AI Historian -->
+<div style="background: linear-gradient(135deg, #f8f7fc, #f2effb); border: 1px solid #e5deff; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; justify-content: space-between;">
+<div style="display: flex; align-items: center; gap: 6px; color: #5d5588; font-size: 12px;">
+<span class="material-symbols-outlined" style="font-size: 18px;">neurology</span>
+<span style="font-weight: 700; letter-spacing: 0.05em; color: #1b1343;">AI HISTORIAN INSIGHT</span>
+</div>
+<span id="synthTime" style="font-size: 11px; color: #48454f;">—</span>
+</div>
+<p id="narrativePara1" style="font-size: 14px; color: #1e1b4b; line-height: 1.7;">Click Capture to load the AI narrative...</p>
+<p id="narrativePara2" style="font-size: 14px; color: #48454f; line-height: 1.7;"></p>
+</div>
+
+<!-- Audio Player -->
+<div style="background: linear-gradient(90deg, #f4f1fa, #faf8ff, #f2effa); border: 1px solid #e5deff; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; justify-content: space-between;">
+<div style="display: flex; align-items: center; gap: 10px;">
+<div style="width: 40px; height: 40px; border-radius: 50%; background: #e5deff; border: 1px solid rgba(93,85,136,0.3); display: flex; align-items: center; justify-content: center; color: #5d5588;">
+<span class="material-symbols-outlined" style="font-size: 22px;">record_voice_over</span>
+</div>
+<div>
+<p style="font-size: 12px; font-weight: 700; color: #1e1b4b;">HeritageLens Narrator</p>
+<p id="audioTitle" style="font-size: 11px; color: #48454f; font-weight: 500;">The Story</p>
+</div>
+</div>
+<span style="font-size: 11px; padding: 3px 10px; border-radius: 999px; background: #ffffff; color: #1b1343; font-weight: 700; border: 1px solid #e5deff;">1.0x</span>
+</div>
+
+<div style="height: 32px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; gap: 6px; background: #ffffff; border-radius: 12px; border: 1px solid #f0f0f0;">
+<div style="width: 3px; background: #5d5588; height: 16px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #5d5588; height: 24px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #5d5588; height: 12px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #5d5588; height: 20px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #5d5588; height: 28px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #5d5588; height: 16px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #5d5588; height: 24px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #c9bffa; height: 8px; border-radius: 999px;"></div>
+<div style="width: 3px; background: #c9bffa; height: 12px; border-radius: 999px;"></div>
+</div>
+
+<div style="display: flex; align-items: center; justify-content: center; gap: 24px; padding-top: 4px;">
+<button style="border: none; background: transparent; color: #48454f; display: flex; align-items: center; justify-content: center; padding: 4px;">
+<span class="material-symbols-outlined" style="font-size: 24px;">replay_10</span>
+</button>
+<button id="playBtn" style="width: 48px; height: 48px; border-radius: 50%; border: none; background: linear-gradient(90deg, #5d5588, #766ea3); color: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(93,85,136,0.35);">
+<span class="material-symbols-outlined" style="font-size: 28px;">play_arrow</span>
+</button>
+<button style="border: none; background: transparent; color: #48454f; display: flex; align-items: center; justify-content: center; padding: 4px;">
+<span class="material-symbols-outlined" style="font-size: 24px;">forward_10</span>
+</button>
+</div>
+<audio id="heritageAudio" preload="auto" playsinline webkit-playsinline style="display:none;"></audio>
+</div>
+
+<!-- Action Buttons -->
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+<button id="favBtn" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; border-radius: 12px; background: #f9fafb; border: 1px solid #e5e7eb; cursor: pointer;">
+<span class="material-symbols-outlined" style="font-size: 22px; color: #3e6378; margin-bottom: 4px;">favorite_border</span>
+<span style="font-size: 11px; color: #1e1b4b; font-weight: 600;">Save</span>
+</button>
+<button id="arBtn" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; border-radius: 12px; background: #f9fafb; border: 1px solid #e5e7eb; cursor: pointer;">
+<span class="material-symbols-outlined" style="font-size: 22px; color: #5d5588; margin-bottom: 4px;">view_in_ar</span>
+<span style="font-size: 11px; color: #1e1b4b; font-weight: 600;">3D Model</span>
+</button>
+<button style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; border-radius: 12px; background: #f9fafb; border: 1px solid #e5e7eb; cursor: pointer;">
+<span class="material-symbols-outlined" style="font-size: 22px; color: #864c47; margin-bottom: 4px;">share</span>
+<span style="font-size: 11px; color: #1e1b4b; font-weight: 600;">Share</span>
+</button>
+</div>
+</article>
+</main>
+
+<!-- BOTTOM NAV -->
+<nav style="position: fixed; bottom: 0; left: 0; width: 100%; z-index: 50; display: flex; justify-content: space-around; align-items: center; padding: 6px 16px; background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); border-top: 1px solid #e5e5e5; box-shadow: 0 -4px 12px rgba(0,0,0,0.05);">
+<a href="#explore" style="display: flex; flex-direction: column; align-items: center; padding: 4px 16px; color: #48454f; text-decoration: none;">
+<span class="material-symbols-outlined" style="font-size: 22px;">explore</span>
+<span style="font-size: 11px; font-weight: 500; margin-top: 2px;">Explore</span>
+</a>
+<a href="#scan" style="display: flex; flex-direction: column; align-items: center; padding: 4px 16px; color: #1b1343; text-decoration: none; background: rgba(229,222,255,0.7); border-radius: 12px;">
+<span class="material-symbols-outlined" style="font-size: 22px; color: #5d5588;">center_focus_strong</span>
+<span style="font-size: 11px; font-weight: 700; margin-top: 2px;">Scan</span>
+</a>
+<a href="#saved" id="savedNavBtn" style="display: flex; flex-direction: column; align-items: center; padding: 4px 16px; color: #48454f; text-decoration: none;">
+<span class="material-symbols-outlined" style="font-size: 22px;">bookmarks</span>
+<span style="font-size: 11px; font-weight: 500; margin-top: 2px;">Saved</span>
+</a>
+<a href="#map" style="display: flex; flex-direction: column; align-items: center; padding: 4px 16px; color: #48454f; text-decoration: none;">
+<span class="material-symbols-outlined" style="font-size: 22px;">map</span>
+<span style="font-size: 11px; font-weight: 500; margin-top: 2px;">Map</span>
+</a>
+</nav>
+
+<script>
+// ============================================
+// CONFIG
+// ============================================
+const API_BASE = window.location.origin;
+let currentMonumentId = "brihadeeswarar_temple";
+let currentLanguage = "en";
+let monumentIndex = 0;
+
+const MONUMENTS = [
+    "brihadeeswarar_temple", "hampi_virupaksha", "konark_sun_temple",
+    "mahabalipuram_shore_temple", "qutub_minar", "taj_mahal",
+    "red_fort", "ajanta_caves", "ellora_caves", "khajuraho_temples",
+    "hawa_mahal", "sun_temple_modhera", "mahabodhi_temple",
+    "golden_temple", "victoria_memorial"
+];
+
+const MONUMENT_COLORS = {
+    "brihadeeswarar_temple": { emoji: "🛕", name: "Brihadeeswarar", color1: "#8b4513", color2: "#d2691e" },
+    "hampi_virupaksha": { emoji: "🏛️", name: "Virupaksha", color1: "#6a1b9a", color2: "#ab47bc" },
+    "konark_sun_temple": { emoji: "☀️", name: "Konark", color1: "#e65100", color2: "#ffb300" },
+    "mahabalipuram_shore_temple": { emoji: "🌊", name: "Shore Temple", color1: "#1565c0", color2: "#42a5f5" },
+    "qutub_minar": { emoji: "🗼", name: "Qutub Minar", color1: "#37474f", color2: "#78909c" },
+    "taj_mahal": { emoji: "🕌", name: "Taj Mahal", color1: "#c9b8a8", color2: "#f5f5f5" },
+    "red_fort": { emoji: "🏰", name: "Red Fort", color1: "#b71c1c", color2: "#e57373" },
+    "ajanta_caves": { emoji: "🎨", name: "Ajanta Caves", color1: "#4a148c", color2: "#7e57c2" },
+    "ellora_caves": { emoji: "⛰️", name: "Ellora Caves", color1: "#3e2723", color2: "#8d6e63" },
+    "khajuraho_temples": { emoji: "🕉️", name: "Khajuraho", color1: "#bf360c", color2: "#ff8a65" },
+    "hawa_mahal": { emoji: "🏯", name: "Hawa Mahal", color1: "#d81b60", color2: "#f8bbd0" },
+    "sun_temple_modhera": { emoji: "🌅", name: "Sun Modhera", color1: "#ff6f00", color2: "#ffca28" },
+    "mahabodhi_temple": { emoji: "🧘", name: "Mahabodhi", color1: "#ffa000", color2: "#ffe082" },
+    "golden_temple": { emoji: "🛕", name: "Golden Temple", color1: "#ffb300", color2: "#ffe082" },
+    "victoria_memorial": { emoji: "🏛️", name: "Victoria Mem", color1: "#455a64", color2: "#90a4ae" }
+};
+
+// ============================================
+// FAVORITES (localStorage)
+// ============================================
+function getFavorites() {
+    try {
+        return JSON.parse(localStorage.getItem('heritagelens_favorites') || '[]');
+    } catch (e) {
+        return [];
+    }
+}
+
+function isFavorite(monumentId) {
+    return getFavorites().includes(monumentId);
+}
+
+function toggleFavorite(monumentId) {
+    let favs = getFavorites();
+    if (favs.includes(monumentId)) {
+        favs = favs.filter(function(id) { return id !== monumentId; });
+    } else {
+        favs.push(monumentId);
+    }
+    localStorage.setItem('heritagelens_favorites', JSON.stringify(favs));
+    updateFavoriteButton();
+}
+
+function updateFavoriteButton() {
+    var favBtn = document.getElementById('favBtn');
+    if (!favBtn) return;
+    var isFav = isFavorite(currentMonumentId);
+    if (isFav) {
+        favBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;color:#d81b60;margin-bottom:4px;font-variation-settings:\'FILL\' 1;">favorite</span><span style="font-size:11px;color:#1e1b4b;font-weight:600;">Saved</span>';
+        favBtn.style.background = '#ffdad6';
+        favBtn.style.borderColor = '#d81b60';
+    } else {
+        favBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;color:#3e6378;margin-bottom:4px;">favorite_border</span><span style="font-size:11px;color:#1e1b4b;font-weight:600;">Save</span>';
+        favBtn.style.background = '#f9fafb';
+        favBtn.style.borderColor = '#e5e7eb';
+    }
+}
+// ============================================
+// SVG FALLBACK IMAGE GENERATOR
+// ============================================
+function makeSVGFallback(monument) {
+    var emoji = pickEmoji(monument);
+    var colors = [
+        ["#8b4513", "#d2691e"], ["#6a1b9a", "#ab47bc"], ["#e65100", "#ffb300"],
+        ["#1565c0", "#42a5f5"], ["#37474f", "#78909c"], ["#c9b8a8", "#f5f5f5"],
+        ["#b71c1c", "#e57373"], ["#4a148c", "#7e57c2"], ["#3e2723", "#8d6e63"],
+    ];
+    var id = monument.id || "";
+    var hash = 0;
+    for (var i = 0; i < id.length; i++) hash += id.charCodeAt(i);
+    var pair = colors[hash % colors.length];
+    var name = (monument.name || "Monument").substring(0, 28);
+    var location = (monument.location || monument.state || "").substring(0, 38);
+
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">' +
+        '<defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">' +
+        '<stop offset="0%" style="stop-color:' + pair[0] + '" />' +
+        '<stop offset="100%" style="stop-color:' + pair[1] + '" />' +
+        '</linearGradient></defs>' +
+        '<rect width="800" height="1000" fill="url(#grad)" />' +
+        '<text x="400" y="420" font-size="200" text-anchor="middle">' + emoji + '</text>' +
+        '<text x="400" y="600" font-size="40" fill="white" text-anchor="middle" font-family="serif" font-weight="bold">' + name + '</text>' +
+        '<text x="400" y="660" font-size="24" fill="rgba(255,255,255,0.85)" text-anchor="middle" font-family="sans-serif">' + location + '</text>' +
+        '</svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// ============================================
+// EMOJI PICKER
+// ============================================
+function pickEmoji(monument) {
+    if (!monument) return '🏛️';
+    var type = (monument.monument_type || "").toLowerCase();
+    var map = {
+        'temple': '🛕', 'fort': '🏰', 'palace': '🏯', 'cave': '⛰️',
+        'mosque': '🕌', 'church': '⛪', 'stupa': '☸️', 'monument': '🏛️',
+        'mausoleum': '🕌', 'memorial': '🗿', 'gurudwara': '🛕',
+        'bridge': '🌉', 'waterfall': '💧', 'lake': '🌊', 'park': '🌳',
+    };
+    for (var key in map) {
+        if (type.indexOf(key) !== -1) return map[key];
+    }
+    if (monument.unesco_status) return '🏆';
+    return '🏛️';
+}
+
+// ============================================
+// LOAD MONUMENT
+// ============================================
+async function loadMonument(monumentId, language) {
+    language = language || "en";
+    currentMonumentId = monumentId;
+    currentLanguage = language;
+
+    var p1El = document.getElementById('narrativePara1');
+    var p2El = document.getElementById('narrativePara2');
+    p1El.className = 'narrative-loading';
+    p1El.textContent = '';
+    p2El.className = '';
+    p2El.textContent = '';
+    document.getElementById('synthTime').textContent = "Synthesizing...";
+
+    try {
+        var res = await fetch(API_BASE + '/experience/' + monumentId + '?language=' + language);
+        if (!res.ok) throw new Error("API error");
+        var data = await res.json();
+        var monument = data.monument;
+
+               // ============================================
+        // UPDATE IMAGE — Real URL from DB, fallback to SVG
+        // ============================================
+        var imageEl = document.getElementById('cameraImage');
+        if (imageEl) {
+            // Try real image from Wikipedia first
+            if (monument.image_urls && monument.image_urls.length > 0 && monument.image_urls[0]) {
+                imageEl.src = monument.image_urls[0];
+                imageEl.onerror = function() {
+                    imageEl.src = makeSVGFallback(monument);
+                };
+                console.log("🖼️ Real image:", monument.image_urls[0]);
+            } else {
+                // No real image — use SVG fallback
+                imageEl.src = makeSVGFallback(monument);
+                console.log("🎨 SVG fallback for:", monument.id);
+            }
+        }
+
+        document.getElementById('monumentLocation').textContent = monument.location;
+        document.getElementById('monumentName').textContent = monument.name;
+               var periodParts = [];
+        if (monument.dynasty) periodParts.push(monument.dynasty);
+        if (monument.built_year || monument.year_display) {
+            periodParts.push(monument.built_year || monument.year_display);
+        }
+        document.getElementById('periodBadge').textContent = periodParts.length > 0
+            ? periodParts.join(' • ')
+            : (monument.monument_type || 'Heritage Monument');
+
+        var badgeContainer = document.getElementById('badgeContainer');
+        var badges = badgeContainer.querySelectorAll('span');
+        if (badges.length >= 3) {
+                       badges[0].textContent = monument.architecture || "Architecture";
+            badges[1].textContent = monument.dynasty || "Dynasty Unknown";
+            badges[2].textContent = monument.unesco_status || (monument.monument_type || "Heritage Site");
+
+        if (data.narrative) {
+            var words = data.narrative.split(' ');
+            var mid = Math.floor(words.length * 0.55);
+            p1El.className = 'fade-in';
+            p2El.className = 'fade-in';
+            p1El.style.fontSize = '14px';
+            p1El.style.color = '#1e1b4b';
+            p1El.style.lineHeight = '1.7';
+            p2El.style.fontSize = '14px';
+            p2El.style.color = '#48454f';
+            p2El.style.lineHeight = '1.7';
+            p1El.textContent = words.slice(0, mid).join(' ');
+            p2El.textContent = words.slice(mid).join(' ');
+        }
+
+        document.getElementById('synthTime').textContent = "Synthesized";
+        document.getElementById('lockBadge').textContent = monument.name.toUpperCase() + ' • RECOGNIZED';
+        document.getElementById('audioTitle').textContent = 'The Story of ' + monument.name;
+        document.getElementById('gpsText').textContent = monument.location;
+
+        // Audio URL
+        if (data.audio_url) {
+            var audioEl = document.getElementById('heritageAudio');
+            var fullAudioUrl = data.audio_url.startsWith('http')
+                ? data.audio_url
+                : API_BASE + data.audio_url;
+            audioEl.src = fullAudioUrl;
+            audioEl.load();
+            console.log("🔊 Audio URL:", fullAudioUrl);
+        }
+
+        updateFavoriteButton();
+
+    } catch (err) {
+        console.error("Error loading monument:", err);
+        p1El.className = '';
+        p1El.style.fontSize = '14px';
+        p1El.style.color = '#1e1b4b';
+        p1El.textContent = "❌ Could not load content. Is the server running?";
+        p2El.textContent = "";
+    }
+}
+
+// ============================================
+// INITIALIZE
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+
+    // CAMERA SETUP
+    var cameraVideo = document.getElementById('cameraVideo');
+    var cameraImage = document.getElementById('cameraImage');
+    var cameraActive = false;
+
+    async function startCamera() {
+        try {
+            var stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: 'environment' },
+                audio: false
+            });
+            cameraVideo.srcObject = stream;
+            cameraVideo.style.display = 'block';
+            cameraImage.style.display = 'none';
+            cameraActive = true;
+        } catch (err) {
+            console.log("Camera not available:", err.message);
+            cameraVideo.style.display = 'none';
+            cameraImage.style.display = 'block';
+            cameraActive = false;
+        }
+    }
+    startCamera();
+
+    // CAPTURE BUTTON
+    document.getElementById('captureBtn').addEventListener('click', async function() {
+        document.getElementById('recognizingText').textContent = "ANALYZING...";
+        document.getElementById('lockBadge').textContent = "PROCESSING...";
+
+        try {
+            var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = audioCtx.createOscillator();
+            var gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+        } catch (e) {}
+
+        if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+
+        // Try sending image to backend
+        try {
+            var canvas = document.createElement('canvas');
+            if (cameraActive && cameraVideo.videoWidth > 0) {
+                canvas.width = cameraVideo.videoWidth;
+                canvas.height = cameraVideo.videoHeight;
+                canvas.getContext('2d').drawImage(cameraVideo, 0, 0);
+            } else {
+                canvas.width = 400; canvas.height = 500;
+                canvas.getContext('2d').fillRect(0, 0, 400, 500);
+            }
+
+            canvas.toBlob(async function(blob) {
+                var formData = new FormData();
+                formData.append('image', blob, 'capture.jpg');
+
+                try {
+                    var res = await fetch(API_BASE + '/recognize', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    var data = await res.json();
+                    document.getElementById('recognizingText').textContent = 'RECOGNIZED • ' + Math.round(data.confidence * 100) + '%';
+                    await loadMonument(data.monument_id, currentLanguage);
+                } catch (err) {
+                    // Fallback: cycle
+                    monumentIndex = (monumentIndex + 1) % MONUMENTS.length;
+                    await loadMonument(MONUMENTS[monumentIndex], currentLanguage);
+                }
+            }, 'image/jpeg', 0.8);
+        } catch (err) {
+            monumentIndex = (monumentIndex + 1) % MONUMENTS.length;
+            await loadMonument(MONUMENTS[monumentIndex], currentLanguage);
+        }
+    });
+
+    // PLAY BUTTON
+    var playBtn = document.getElementById('playBtn');
+    var audioEl = document.getElementById('heritageAudio');
+
+    playBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        if (!audioEl.src) {
+            alert("No audio yet. Click Capture & Recognize first.");
+            return;
+        }
+        try {
+            if (audioEl.paused) {
+                audioEl.load();
+                await audioEl.play();
+                playBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+            } else {
+                audioEl.pause();
+                playBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+            }
+        } catch (err) {
+            alert("Audio failed: " + err.message);
+        }
+    });
+
+    audioEl.addEventListener('ended', function() {
+        playBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+    });
+
+    // FAVORITE BUTTON
+    document.getElementById('favBtn').addEventListener('click', function() {
+        toggleFavorite(currentMonumentId);
+    });
+
+    // AR BUTTON
+    document.getElementById('arBtn').addEventListener('click', function() {
+        var modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;inset:0;background:rgba(30,27,75,0.85);backdrop-filter:blur(12px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+        modal.innerHTML = '<div style="background:white;border-radius:24px;padding:32px;max-width:500px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.3);">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+            '<h2 class="font-serif" style="font-size:24px;color:#1e1b4b;margin:0;">🥽 AR Experience</h2>' +
+            '<button id="closeArModal" style="background:#e5deff;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:20px;color:#5d5588;">×</button></div>' +
+            '<div style="background:linear-gradient(135deg,#c9bffa,#e5deff,#c3e7ff);border-radius:16px;height:240px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:80px;">🏛️</div>' +
+            '<p style="color:#48454f;font-size:15px;line-height:1.6;margin-bottom:20px;"><strong style="color:#1e1b4b;">Coming soon:</strong> Point your camera at the monument and see historical reconstructions and 3D models in AR — powered by ARCore.</p>' +
+            '<div style="display:flex;justify-content:flex-end;"><button id="closeArBtn2" style="padding:10px 20px;border-radius:10px;border:1px solid #e5deff;background:white;color:#5d5588;font-weight:600;cursor:pointer;">Close</button></div></div>';
+        document.body.appendChild(modal);
+        document.getElementById('closeArModal').onclick = function() { modal.remove(); };
+        document.getElementById('closeArBtn2').onclick = function() { modal.remove(); };
+    });
+
+    // LANGUAGE TOGGLE
+        // ============================================
+    // LANGUAGE TOGGLE — 9 Indian Languages
+    // ============================================
+    var langToggle = document.createElement('div');
+    langToggle.id = 'langToggle';
+    langToggle.style.cssText = 'position:fixed;top:70px;right:16px;z-index:60;display:flex;gap:4px;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);border:1px solid #e5deff;border-radius:999px;padding:4px;box-shadow:0 4px 16px rgba(93,85,136,0.15);flex-wrap:wrap;max-width:240px;justify-content:flex-end;';
+    document.body.appendChild(langToggle);
+
+    var availableLanguages = [
+        { code: 'en', label: 'EN' },
+        { code: 'hi', label: 'हिंदी' },
+        { code: 'ta', label: 'தமிழ்' },
+        { code: 'te', label: 'తెలుగు' },
+        { code: 'kn', label: 'ಕನ್ನಡ' },
+        { code: 'ml', label: 'മലയാളം' },
+        { code: 'bn', label: 'বাংলা' },
+        { code: 'mr', label: 'मराठी' },
+        { code: 'gu', label: 'ગુજરાતી' },
+    ];
+
+    function renderLanguageButtons() {
+        langToggle.innerHTML = '';
+        availableLanguages.forEach(function(lang) {
+            var btn = document.createElement('button');
+            btn.id = 'lang_' + lang.code;
+            btn.textContent = lang.label;
+            var isActive = lang.code === currentLanguage;
+            btn.style.cssText = 'padding:6px 10px;border-radius:999px;border:none;font-weight:700;font-size:11px;cursor:pointer;background:' + (isActive ? '#e5deff' : 'transparent') + ';color:' + (isActive ? '#1b1343' : '#48454f') + ';font-family:inherit;';
+            btn.onclick = function() {
+                if (currentLanguage === lang.code) return;
+                currentLanguage = lang.code;
+                renderLanguageButtons();
+                loadMonument(currentMonumentId, currentLanguage);
+            };
+            langToggle.appendChild(btn);
+        });
+    }
+
+    renderLanguageButtons();
+
+
+       // ============================================
+    // SEARCH-BASED MONUMENT PICKER (482+ monuments)
+    // ============================================
+    var searchPanel = document.createElement('div');
+    searchPanel.id = 'searchPanel';
+    searchPanel.style.cssText = 'position:fixed;top:70px;left:16px;z-index:60;display:none;flex-direction:column;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);border:1px solid #e5deff;border-radius:16px;box-shadow:0 8px 24px rgba(93,85,136,0.18);width:300px;max-height:70vh;overflow:hidden;';
+    searchPanel.innerHTML =
+        '<div style="padding:6px 12px;font-size:11px;color:#7a7a88;border-bottom:1px solid #e5deff;background:#fafafa;" id="searchStats">Loading 482 monuments...</div>' +
+        '<input type="text" id="searchInput" placeholder="Search monuments, states..." autocomplete="off" style="width:100%;padding:12px 16px;border:none;border-bottom:1px solid #e5deff;background:transparent;font-size:13px;font-family:inherit;color:#1e1b4b;outline:none;"/>' +
+        '<div id="searchResults" style="overflow-y:auto;max-height:55vh;padding:6px;"></div>';
+    document.body.appendChild(searchPanel);
+
+    // Toggle search panel button
+    var searchToggle = document.createElement('button');
+    searchToggle.id = 'searchToggle';
+    searchToggle.innerHTML = '<span class="material-symbols-outlined" style="font-size:22px;">search</span>';
+    searchToggle.style.cssText = 'position:fixed;top:70px;left:16px;z-index:61;width:48px;height:48px;border-radius:50%;border:2px solid #e5deff;background:white;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(93,85,136,0.25);color:#5d5588;';
+    document.body.appendChild(searchToggle);
+
+    var searchPanelOpen = false;
+    searchToggle.onclick = function() {
+        searchPanelOpen = !searchPanelOpen;
+        searchPanel.style.display = searchPanelOpen ? 'flex' : 'none';
+        searchToggle.style.background = searchPanelOpen ? '#5d5588' : 'white';
+        searchToggle.style.color = searchPanelOpen ? 'white' : '#5d5588';
+        if (searchPanelOpen) {
+            document.getElementById('searchInput').focus();
+        }
+    };
+
+    // Fetch all monuments from API
+    var allMonuments = [];
+    var searchDebounceTimer = null;
+
+    async function loadAllMonuments() {
+        try {
+            var res = await fetch(API_BASE + '/monuments?limit=500');
+            var data = await res.json();
+            allMonuments = data.monuments || [];
+            document.getElementById('searchStats').textContent = 'Search ' + data.total + ' monuments';
+            renderSearchResults(allMonuments.slice(0, 50));
+            var dbCountEl = document.getElementById('dbCount');
+            if (dbCountEl) dbCountEl.textContent = data.total;
+        } catch (err) {
+            console.error("Failed to load monuments:", err);
+            document.getElementById('searchStats').textContent = 'Failed to load';
+        }
+    }
+
+    function getEmojiForType(type) {
+        var map = {
+            'Temple': '🛕', 'Fort': '🏰', 'Palace': '🏯', 'Cave': '⛰️',
+            'Mosque': '🕌', 'Church': '⛪', 'Stupa': '☸️', 'Monument': '🏛️',
+            'Mausoleum': '🕌', 'Memorial': '🗿', 'Gurudwara': '🛕',
+            'Bridge': '🌉', 'Waterfall': '💧', 'Lake': '🌊', 'Park': '🌳',
+        };
+        if (!type) return '🏛️';
+        for (var key in map) {
+            if (type.toLowerCase().indexOf(key.toLowerCase()) !== -1) return map[key];
+        }
+        return '🏛️';
+    }
+
+    function renderSearchResults(monuments) {
+        var resultsEl = document.getElementById('searchResults');
+        if (!monuments || monuments.length === 0) {
+            resultsEl.innerHTML = '<div style="padding:16px;text-align:center;color:#a0a0b0;font-size:12px;">No monuments found</div>';
+            return;
+        }
+        var html = '';
+        monuments.forEach(function(m) {
+            var emoji = getEmojiForType(m.monument_type);
+            var loc = m.location || m.state || '';
+            html += '<div class="monument-item" data-id="' + m.id + '" style="padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:background 0.15s;">' +
+                '<span style="font-size:20px;flex-shrink:0;">' + emoji + '</span>' +
+                '<div style="flex:1;min-width:0;">' +
+                '<div style="font-weight:600;font-size:12px;color:#1e1b4b;margin-bottom:2px;">' + m.name + '</div>' +
+                '<div style="color:#7a7a88;font-size:11px;">' + loc + '</div>' +
+                '</div></div>';
+        });
+        resultsEl.innerHTML = html;
+
+        // Attach click handlers
+        resultsEl.querySelectorAll('.monument-item').forEach(function(el) {
+            el.onmouseover = function() { el.style.background = '#e5deff'; };
+            el.onmouseout = function() { el.style.background = ''; };
+            el.onclick = function() {
+                var id = el.getAttribute('data-id');
+                loadMonument(id, currentLanguage);
+                searchPanelOpen = false;
+                searchPanel.style.display = 'none';
+                searchToggle.style.background = 'white';
+                searchToggle.style.color = '#5d5588';
+                window.scrollTo({ top: 400, behavior: 'smooth' });
+            };
+        });
+    }
+
+    function filterMonuments(query) {
+        if (!query) return allMonuments.slice(0, 50);
+        var q = query.toLowerCase();
+        return allMonuments.filter(function(m) {
+            return (m.name || '').toLowerCase().indexOf(q) !== -1 ||
+                   (m.location || '').toLowerCase().indexOf(q) !== -1 ||
+                   (m.state || '').toLowerCase().indexOf(q) !== -1;
+        }).slice(0, 50);
+    }
+
+    // Search input handler
+    document.addEventListener('input', function(e) {
+        if (e.target && e.target.id === 'searchInput') {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(function() {
+                var q = e.target.value.trim();
+                renderSearchResults(filterMonuments(q));
+            }, 150);
+        }
+    });
+
+    // Load all monuments on startup
+    loadAllMonuments();
+
+    // ACCESSIBILITY BUTTON
+    var a11yBtn = document.createElement('button');
+    a11yBtn.innerHTML = '♿';
+    a11yBtn.style.cssText = 'position:fixed;bottom:100px;right:16px;z-index:60;width:48px;height:48px;border-radius:50%;border:2px solid #e5deff;background:white;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(93,85,136,0.25);';
+    document.body.appendChild(a11yBtn);
+
+    var a11yOn = false;
+    a11yBtn.onclick = function() {
+        a11yOn = !a11yOn;
+        document.body.style.fontSize = a11yOn ? '18px' : '';
+        document.body.style.filter = a11yOn ? 'contrast(1.15) saturate(1.1)' : '';
+        a11yBtn.style.background = a11yOn ? '#5d5588' : 'white';
+        a11yBtn.style.color = a11yOn ? 'white' : '';
+    };
+
+    // INITIAL LOAD
+    loadMonument('brihadeeswarar_temple', 'en');
+});
+</script>
+
+</body>
+</html>

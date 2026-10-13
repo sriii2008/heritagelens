@@ -1,0 +1,555 @@
+# ═══════════════════════════════════════════════════════════
+# HERITAGELENS — 500+ INDIAN MONUMENTS
+# Format: One monument name per line
+# Lines starting with # are ignored
+# ═══════════════════════════════════════════════════════════
+
+# ─── DELHI ───
+Taj Mahal
+Red Fort
+Qutub Minar
+Humayun's Tomb
+India Gate
+Lotus Temple
+Akshardham Delhi
+Jama Masjid Delhi
+Purana Qila
+Jantar Mantar Delhi
+Safdarjung Tomb
+Tughlaqabad Fort
+Hauz Khas Complex
+Raj Ghat
+Rashtrapati Bhavan
+Parliament House India
+National Museum Delhi
+Lodi Gardens
+Mehrauli Archaeological Park
+Siri Fort
+
+# ─── AGRA & UTTAR PRADESH ───
+Agra Fort
+Fatehpur Sikri
+Itmad-ud-Daulah Tomb
+Mehtab Bagh
+Akbar's Tomb Sikandra
+Ram Bagh Agra
+Chini Ka Rauza
+Mariam's Tomb
+Buland Darwaza
+Panch Mahal Fatehpur Sikri
+Jama Masjid Fatehpur Sikri
+Sarnath
+Kushinagar
+Varanasi Ghats
+Kashi Vishwanath Temple
+Dashashwamedh Ghat
+Manikarnika Ghat
+Ramnagar Fort
+Chunar Fort
+Allahabad Fort
+Anand Bhavan
+Bara Imambara Lucknow
+Chota Imambara Lucknow
+Rumi Darwaza
+Hazratganj
+Residency Lucknow
+Kaiserbagh Palace
+Kanpur Memorial Church
+Jhansi Fort
+Rani Mahal Jhansi
+Orchha Fort
+Chaturbhuj Temple Orchha
+Raja Mahal Orchha
+Jehangir Mahal Orchha
+
+# ─── RAJASTHAN ───
+Hawa Mahal
+Amber Fort
+City Palace Jaipur
+Jantar Mantar Jaipur
+Nahargarh Fort
+Jaigarh Fort
+Albert Hall Museum
+Jal Mahal Jaipur
+Birla Mandir Jaipur
+Galtaji Temple
+Jaisalmer Fort
+Patwon Ki Haveli
+Nathmal Ki Haveli
+Salim Singh Ki Haveli
+Gadisar Lake
+Kuldhara Village
+Mehrangarh Fort
+Jaswant Thada
+Umaid Bhawan Palace
+Mandore Gardens
+Chittorgarh Fort
+Vijay Stambh
+Rana Kumbha Palace
+Kumbhalgarh Fort
+Ranakpur Temple
+Dilwara Temples
+Mount Abu
+Nakki Lake
+Ranthambore Fort
+Bharatpur Palace
+Lohagarh Fort
+Deeg Palace
+Bundi Palace
+Taragarh Fort Bundi
+Jait Sagar Lake
+Rani Ki Vav Patan
+Modhera Sun Temple
+Adalaj Stepwell
+Sabarmati Ashram
+Sidi Saiyyed Mosque
+Bhadra Fort
+Jama Masjid Ahmedabad
+Teen Darwaza
+Kankaria Lake
+Sarkhej Roza
+Gandhi Ashram Ahmedabad
+
+# ─── MAHARASHTRA ───
+Gateway of India
+Elephanta Caves
+Chhatrapati Shivaji Terminus
+Ajanta Caves
+Ellora Caves
+Kailasa Temple Ellora
+Bibi Ka Maqbara
+Shaniwar Wada
+Aga Khan Palace
+Sinhagad Fort
+Rajgad Fort
+Pratapgad Fort
+Lohagad Fort
+Raigad Fort
+Shivneri Fort
+Janjira Fort
+Murud Janjira
+Bassein Fort
+Vasai Fort
+Maharashtra Buddhist Caves
+Kanheri Caves
+Karlaa Caves
+Bhaja Caves
+Ellora Jain Caves
+Daulatabad Fort
+Aurangabad Caves
+Panchakki
+Bibi Ka Maqbara Aurangabad
+Haji Ali Dargah
+Siddhivinayak Temple
+Mumbadevi Temple
+Mount Mary Church
+Banganga Tank
+Global Vipassana Pagoda
+
+# ─── KARNATAKA ───
+Hampi
+Virupaksha Temple
+Vittala Temple
+Lotus Mahal
+Elephant Stables
+Queen's Bath Hampi
+Hemakuta Hill
+Matanga Hill
+Achyutaraya Temple
+Pattadakal
+Badami Caves
+Aihole
+Belur Temple
+Halebidu
+Somanathapura Temple
+Shravanabelagola
+Gomateshwara Statue
+Mysore Palace
+Chamundi Hills
+Jaganmohan Palace
+Lalitha Mahal
+Brindavan Gardens
+Ranganathaswamy Temple Srirangapatna
+Tipu Sultan's Summer Palace
+Bangalore Palace
+Bull Temple Bangalore
+Vidhana Soudha
+Iskcon Temple Bangalore
+Lalbagh Botanical Garden
+Cubbon Park
+Attara Kacheri
+
+# ─── TAMIL NADU ───
+Meenakshi Temple
+Brihadeeswarar Temple
+Shore Temple Mahabalipuram
+Pancha Rathas
+Arjuna's Penance
+Krishna's Butterball
+Varaha Cave Temple
+Kanchipuram Temples
+Kailasanathar Temple
+Ekambareswarar Temple
+Vaikunta Perumal Temple
+Rameswaram Temple
+Pamban Bridge
+Dhanushkodi
+Kanyakumari Temple
+Vivekananda Rock Memorial
+Thiruvalluvar Statue
+Padmanabhapuram Palace
+Suchindram Temple
+Thanjavur Maratha Palace
+Saraswathi Mahal Library
+Airavatesvara Temple
+Gangaikonda Cholapuram
+Chidambaram Temple
+Natyanjali Temple
+Velankanni Church
+Nagore Dargah
+Chettinad Mansions
+Madurai Thirumalai Nayak Palace
+Gandhi Memorial Museum Madurai
+Alagar Kovil
+Tiruparankundram
+Palani Murugan Temple
+Thiruthani Murugan Temple
+Srivilliputhur Temple
+Thiruchendur Murugan Temple
+Srirangam Temple
+Rockfort Temple Trichy
+Jambukeswarar Temple
+Vekkaliamman Temple
+Ucchi Pillayar Temple
+Vellore Fort
+Jalakandeswarar Temple
+Yelagiri Hills
+
+# ─── KERALA ───
+Padmanabhaswamy Temple
+Kovalam Beach
+Varkala Cliff
+Mattancherry Palace
+Jewish Synagogue Kochi
+St. Francis Church Kochi
+Santa Cruz Cathedral Basilica
+Chinese Fishing Nets
+Fort Kochi
+Bekal Fort
+Bekal Beach
+Edakkal Caves
+Wayanad Jain Temple
+Thirunelli Temple
+Guruvayur Temple
+Vadakkunnathan Temple
+Shakthan Thampuran Palace
+Athirappilly Falls
+Silent Valley National Park
+Periyar Wildlife Sanctuary
+Alappuzha Backwaters
+Kumarakom Bird Sanctuary
+Pathiramanal Island
+
+# ─── ANDHRA PRADESH & TELANGANA ───
+Golconda Fort
+Charminar
+Qutb Shahi Tombs
+Mecca Masjid
+Chowmahalla Palace
+Falaknuma Palace
+Salar Jung Museum
+Hussain Sagar
+Birla Mandir Hyderabad
+Warangal Fort
+Thousand Pillar Temple
+Ramappa Temple
+Bhongir Fort
+Medak Church
+Nagarjuna Konda
+Amaravati Stupa
+Lepakshi Temple
+Tirupati Balaji Temple
+Srikalahasti Temple
+Kalahasti Temple
+Kanipakam Temple
+Srisailam Temple
+Ahobilam
+Simhachalam Temple
+Araku Valley
+Borra Caves
+Chandragiri Fort
+Horsley Hills
+
+# ─── ODISHA ───
+Konark Sun Temple
+Jagannath Temple Puri
+Lingaraj Temple
+Udayagiri Caves
+Barabati Fort
+Chilika Lake
+Dhauli Stupa
+Khandagiri Caves
+Ratnagiri Monastery
+Lalitgiri
+Puspagiri
+Bhubaneswar Temples
+Mukteshwar Temple
+Rajarani Temple
+Parasurameswara Temple
+Vaital Deul Temple
+Brahmeswara Temple
+Sisupalgarh
+
+# ─── WEST BENGAL ───
+Victoria Memorial
+Howrah Bridge
+Dakshineswar Temple
+Belur Math
+Kalighat Temple
+Cooch Behar Palace
+Hazarduari Palace
+Indian Museum Kolkata
+Marble Palace
+St. Paul's Cathedral Kolkata
+Writers Building
+Fort William Kolkata
+Eden Gardens
+Shaheed Minar
+Birla Planetarium
+Jorasanko Thakur Bari
+Shantiniketan
+Bishnupur Terracotta Temples
+Rasmancha Bishnupur
+Kalna Temples
+Chandannagar
+Hooghly Imambara
+Serampore
+Bandel Church
+Tarapith Temple
+
+# ─── PUNJAB & HARYANA ───
+Golden Temple
+Jallianwala Bagh
+Wagah Border
+Rock Garden Chandigarh
+Pinjore Gardens
+Kurukshetra
+Surajkund
+Tilyar Lake
+Brahma Sarovar
+Sheesh Mahal Patiala
+Qila Mubarak
+Gurudwara Bangla Sahib
+Akal Takht
+Gobindgarh Fort
+Partition Museum Amritsar
+
+# ─── HIMACHAL PRADESH & UTTARAKHAND ───
+Shimla Mall Road
+Christ Church Shimla
+Viceregal Lodge
+Jakhoo Temple
+Kufri
+Manali Hadimba Temple
+Vashisht Temple
+Naggar Castle
+Rohtang Pass
+Solang Valley
+Dharamshala
+Dalai Lama Temple
+Bhagsunag Temple
+Kangra Fort
+Masroor Rock Cut Temple
+Baijnath Temple
+Chamunda Devi Temple
+Jwalamukhi Temple
+Chintpurni Temple
+Naina Devi Temple
+Haridwar Har Ki Pauri
+Rishikesh Laxman Jhula
+Ram Jhula
+Triveni Ghat
+Kedarnath Temple
+Badrinath Temple
+Gangotri Temple
+Yamunotri Temple
+Hemkund Sahib
+Valley of Flowers
+Jim Corbett National Park
+
+# ─── MADHYA PRADESH & CHHATTISGARH ───
+Khajuraho Temples
+Kandariya Mahadev Temple
+Lakshmana Temple
+Vishvanatha Temple
+Chitragupta Temple
+Sanchi Stupa
+Ujjain Mahakaleshwar
+Omkareshwar
+Bhimbetka Caves
+Gwalior Fort
+Jai Vilas Palace
+Tighra Dam
+Orchha
+Bandhavgarh
+Kanha National Park
+Pench Tiger Reserve
+Satpura National Park
+Pachmarhi
+Jatashankar Temple
+Chitrakoot
+Amarkantak
+Maheshwar Fort
+Mandu
+Jahaz Mahal Mandu
+Rani Roopmati Pavilion
+Bhojpur Temple
+Bhopal Taj-ul-Masajid
+Upper Lake Bhopal
+Bhimbetka Rock Shelters
+Chhattisgarh Sirpur
+Bhoramdeo Temple
+Chitrakote Falls
+Kanger Valley National Park
+
+# ─── BIHAR & JHARKHAND ───
+Mahabodhi Temple
+Bodh Gaya
+Nalanda
+Rajgir
+Vikramshila
+Pawapuri
+Vaishali
+Barabar Caves
+Sher Shah Suri Tomb
+Patna Sahib Gurudwara
+Patna Museum
+Golghar Patna
+Kumhrar
+Jharkhand Deoghar Temple
+Baidyanath Temple
+Parasnath Hill
+Betla National Park
+Hundru Falls
+Dassam Falls
+Netarhat
+Ranchi Hill
+Jagannath Temple Ranchi
+Sun Temple Ranchi
+
+# ─── NORTH EAST ───
+Kamakhya Temple
+Umananda Temple
+Navagraha Temple
+Assam State Museum
+Kaziranga National Park
+Manas National Park
+Majuli Island
+Sivasagar Temples
+Rang Ghar
+Talatal Ghar
+Kareng Ghar
+Tawang Monastery
+Bomdila
+Ziro Valley
+Tawang War Memorial
+Nuranang Falls
+Shillong Peak
+Elephant Falls
+Living Root Bridges
+Umiam Lake
+Mawsmai Caves
+Cherrapunji
+Dawki
+Unakoti
+Tripura Sundari Temple
+Neermahal Palace
+Ujjayanta Palace
+Loktak Lake
+Kangla Fort
+Ima Keithel
+Shree Govindajee Temple
+Khonghampat Orchidarium
+Kohima War Cemetery
+Dzukou Valley
+Hornbill Festival
+Nagaland State Museum
+Rumtek Monastery
+Pemayangtse Monastery
+Tashi Ding Monastery
+
+# ─── GOA & UNION TERRITORIES ───
+Basilica of Bom Jesus
+Se Cathedral
+Church of St. Francis of Assisi
+Fort Aguada
+Chapora Fort
+Reis Magos Fort
+Cabo de Rama Fort
+Dudhsagar Falls
+Anjuna Beach
+Palolem Beach
+Fontainhas Goa
+Calangute Beach
+Baga Beach
+Panaji
+Pondicherry French Quarter
+Aurobindo Ashram
+Auroville
+Promenade Beach Pondicherry
+Paradise Beach Pondicherry
+Andaman Cellular Jail
+Ross Island
+Havelock Island
+Radhanagar Beach
+Neil Island
+Barren Island
+Elephant Beach
+Diu Fort
+Daman Fort
+Moti Daman
+Lakshadweep Minicoy
+Bangaram Island
+Kavaratti
+
+# ─── UNESCO WORLD HERITAGE SITES ───
+Agra Fort
+Ajanta Caves
+Buddhist Monuments at Sanchi
+Champaner-Pavagadh Archaeological Park
+Chhatrapati Shivaji Terminus
+Churches and Convents of Goa
+Elephanta Caves
+Ellora Caves
+Fatehpur Sikri
+Great Living Chola Temples
+Group of Monuments at Hampi
+Group of Monuments at Mahabalipuram
+Group of Monuments at Pattadakal
+Hill Forts of Rajasthan
+Historic City of Ahmadabad
+Humayun's Tomb
+Jaipur City
+Jantar Mantar
+Kaziranga National Park
+Keoladeo National Park
+Khajuraho Group of Monuments
+Mahabodhi Temple Complex
+Manas Wildlife Sanctuary
+Mountain Railways of India
+Nanda Devi and Valley of Flowers
+Qutub Minar and its Monuments
+Rani-ki-Vav
+Red Fort Complex
+Rock Shelters of Bhimbetka
+Sundarbans National Park
+Sun Temple Konark
+Taj Mahal
+The Architectural Work of Le Corbusier
+Victorian Gothic and Art Deco Ensembles of Mumbai
+Western Ghats
+Great Himalayan National Park
+Khangchendzonga National Park
+Sundarbans
+Nalanda Mahavihara
+Ramsar Sites

@@ -55,7 +55,7 @@
 
 ### Backend processes `/experience/`
 
-1. Load monument JSON from `data/monuments.json`
+1. Load monument JSON from `../data/seed/monuments.json`
 2. Call `generate_narrative()`:
    - Try Gemini (2 models)
    - Fallback to Groq (2 models)

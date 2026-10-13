@@ -40,3 +40,16 @@ dist/
 
 # Uploads (temporary)
 uploads/
+# SQLite database
+data/heritagelens.db
+data/heritagelens.db-journal
+data/heritagelens.db-wal
+data/heritagelens.db-shm
+
+# Local images (if not committed)
+data/images/*
+!data/images/.gitkeep
+# Cloudflare binary
+cloudflared.exe
+cloudflared.exe.exe
+*.exe

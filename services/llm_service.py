@@ -1,5 +1,4 @@
 import os
-import time
 from dotenv import load_dotenv
 from google import genai
 from groq import Groq
@@ -12,10 +11,11 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 groq_client = Groq(api_key=GROQ_API_KEY)
 
-GEMINI_MODELS = ["gemini-flash-latest", "gemini-pro-latest"]
+# Groq first (more reliable on free tier), Gemini as fallback
 GROQ_MODELS = ["openai/gpt-oss-120b", "openai/gpt-oss-20b"]
+GEMINI_MODELS = ["gemini-flash-latest", "gemini-pro-latest"]
 
-# Simple in-memory cache to prevent repeated requests
+# Cache to avoid repeated calls
 _narrative_cache = {}
 
 
@@ -54,7 +54,26 @@ Dynasty: {dynasty}
 Write 120-150 words in Tamil. Keep it warm and engaging."""
 
 
+def _try_groq(prompt: str) -> str:
+    """Try Groq models in order."""
+    for model_name in GROQ_MODELS:
+        try:
+            response = groq_client.chat.completions.create(
+                model=model_name,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+                max_tokens=400,
+            )
+            print(f"✅ Groq ({model_name}) succeeded")
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            print(f"❌ Groq {model_name} failed: {str(e)[:100]}")
+            continue
+    return None
+
+
 def _try_gemini(prompt: str) -> str:
+    """Try Gemini models in order."""
     for model_name in GEMINI_MODELS:
         try:
             response = gemini_client.models.generate_content(
@@ -73,33 +92,13 @@ def _try_gemini(prompt: str) -> str:
     return None
 
 
-def _try_groq(prompt: str) -> str:
-    for model_name in GROQ_MODELS:
-        # Try each Groq model up to 2 times with delay
-        for attempt in range(2):
-            try:
-                response = groq_client.chat.completions.create(
-                    model=model_name,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0.7,
-                    max_tokens=400,
-                )
-                print(f"✅ Groq ({model_name}) succeeded")
-                return response.choices[0].message.content.strip()
-            except Exception as e:
-                err = str(e)
-                if "429" in err or "rate" in err.lower():
-                    print(f"⏳ Groq {model_name} rate-limited, retrying in 2s...")
-                    time.sleep(2)
-                    continue
-                else:
-                    print(f"❌ Groq {model_name} failed: {err[:80]}")
-                    break
-    return None
-
-
 def generate_narrative(monument_info: dict, language: str = "en") -> str:
-    # Check cache first
+    """
+    Generate narrative:
+    1. Try Groq (more reliable, faster)
+    2. If Groq fails, try Gemini
+    3. If both fail, use static fallback from monument data
+    """
     cache_key = f"{monument_info.get('id')}:{language}"
     if cache_key in _narrative_cache:
         print(f"✅ Cache hit for {cache_key}")
@@ -107,20 +106,20 @@ def generate_narrative(monument_info: dict, language: str = "en") -> str:
 
     prompt = _build_prompt(monument_info, language)
 
-    # Try Gemini
-    result = _try_gemini(prompt)
-    if result:
-        _narrative_cache[cache_key] = result
-        return result
-
-    # Try Groq
+    # 1. Try Groq FIRST (more reliable free tier)
     result = _try_groq(prompt)
     if result:
         _narrative_cache[cache_key] = result
         return result
 
-    # Fallback
-    print("⚠️ All AI providers failed. Using static fallback.")
+    # 2. Fallback to Gemini
+    result = _try_gemini(prompt)
+    if result:
+        _narrative_cache[cache_key] = result
+        return result
+
+    # 3. Static fallback
+    print("⚠️ Both AI providers failed. Using static fallback.")
     name = monument_info.get("name", "This monument")
     location = monument_info.get("location", "")
     built_year = monument_info.get("built_year", "")
@@ -129,4 +128,5 @@ def generate_narrative(monument_info: dict, language: str = "en") -> str:
 
     if language == "ta":
         return f"{name} என்பது {location} இல் அமைந்துள்ள ஒரு அற்புதமான நினைவுச்சின்னம். {built_year} இல் {dynasty} காலத்தில் கட்டப்பட்டது. {short_desc}"
+
     return f"{name} is a magnificent monument in {location}. Built in {built_year} during the {dynasty} period. {short_desc}"
